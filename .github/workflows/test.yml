@@ -1,0 +1,57 @@
+name: test the lessons
+# Every command in every post, run and compared with what the post shows.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays: catches a new git release changing its output
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  lessons:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        git: [ubuntu-24.04, latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pick the git version
+        id: ref
+        run: |
+          if [ "${{ matrix.git }}" = latest ]; then
+            ref=$(git ls-remote --tags --refs https://github.com/git/git.git 'v*' |
+                  awk -F/ '{print $3}' | grep -Ev 'rc|-' | sort -V | tail -1)
+          else
+            ref=""
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+      - name: Build the test image
+        run: docker build -t lessons --build-arg GIT_REF=${{ steps.ref.outputs.ref }} docker/
+      - name: Run every lesson
+        # The posts show Ubuntu 24.04's git, so that run must match exactly. A newer
+        # git is compared with its recorded differences (tests/known-differences/).
+        run: |
+          if [ "${{ matrix.git }}" = latest ]; then
+            docker run --rm -v "$PWD:/course" -w /course lessons tests/compare-known.sh
+          else
+            docker run --rm -v "$PWD:/course" -w /course lessons tests/run-all.sh
+          fi
+      - name: Open an issue when the weekly run fails
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "Lesson transcripts no longer match (git ${{ matrix.git }} ${{ steps.ref.outputs.ref }})" \
+            --body "The weekly run failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+  published-posts:
+    # Once a lesson is published, its live post must still match transcript.md.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/check-live.py

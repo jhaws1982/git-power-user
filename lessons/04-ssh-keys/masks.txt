@@ -1,0 +1,6 @@
+# Keys are new every run: mask the fingerprint, the randomart, and the agent pid.
+SHA256:[A-Za-z0-9+/]{43} => SHA256:<fingerprint>
+^\|.{17}\|$ => |<randomart>|
+^Agent pid \d+ => Agent pid <pid>
+# The demo answers the file prompt with a sandbox path; the post shows the default.
+^Enter file in which to save the key .*$ => Enter file in which to save the key (<default>):

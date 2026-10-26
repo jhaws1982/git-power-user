@@ -1,0 +1,2 @@
+# Commit dates in amend/revert output depend on when the demo ran.
+^ Date: .*$ =>  Date: <date>

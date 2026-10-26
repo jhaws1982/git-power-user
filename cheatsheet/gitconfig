@@ -1,0 +1,61 @@
+# Become a Git Power User: every global setting the course recommends, in one file.
+# Each section names the lesson that explains it. Copy what you want into ~/.gitconfig,
+# or keep this file and include it:   git config --global include.path /path/to/this/gitconfig
+# Nothing here is tested on its own; each line comes from a post whose commands are.
+
+[user]
+	# Lesson 2. Your own name and email go here (lesson 3 adds a second identity).
+	name = Your Name
+	email = you@example.com
+[init]
+	defaultBranch = main          # lesson 2
+[core]
+	editor = vim                  # lesson 2; lesson 17 shows "code --wait"
+[pull]
+	ff = only                     # lesson 2: pull never makes a surprise merge
+[push]
+	autoSetupRemote = true        # lessons 2 and 9: the first push of a branch sets its upstream
+[fetch]
+	prune = true                  # lesson 2: drop remote branches that were deleted
+[merge]
+	conflictStyle = zdiff3        # lesson 2: conflict markers also show the common ancestor
+[rerere]
+	enabled = true                # lesson 2: reuse conflict resolutions you've recorded
+[diff]
+	colorMoved = default          # lesson 2
+[rebase]
+	autoStash = true              # lesson 2
+	autoSquash = true             # lesson 12: rebase -i arranges fixup! commits for you
+[commit]
+	verbose = true                # lesson 2: see the diff while you write the message
+[tag]
+	sort = version:refname        # bonus 1: v1.10 sorts after v1.9
+[versionsort]
+	suffix = -rc                  # bonus 1: release candidates sort before the release
+
+# Lesson 16: the aliases, exactly as the post gives them.
+[alias]
+	st = status -sb
+	sw = switch
+	br = branch -vv
+	lg = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%cr, %an)%C(reset)'
+	unstage = restore --staged
+	amend = commit --amend --no-edit
+	pushf = push --force-with-lease
+	last = log -1 --stat
+	aliases = config --get-regexp ^alias\\.
+	gone = !git branch -vv | awk '/: gone]/ {print $1}'
+	cleanup = !git branch --merged main | grep -v -e '^\\*' -e ' main$' | xargs -r git branch -d
+	fixup = "!f() { git commit --fixup=\"$1\" && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash \"$1~1\"; }; f"
+
+# Bonus 1: sign with your SSH key. Uncomment once the key exists.
+# [gpg]
+# 	format = ssh
+# [user]
+# 	signingKey = ~/.ssh/id_ed25519.pub
+# [gpg "ssh"]
+# 	allowedSignersFile = ~/.ssh/allowed_signers
+# [commit]
+# 	gpgSign = true
+# [tag]
+# 	gpgSign = true

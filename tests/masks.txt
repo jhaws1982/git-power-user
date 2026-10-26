@@ -1,0 +1,7 @@
+# regex => replacement, applied to the post and the demo output alike.
+# Keep this list short: anything masked here is no longer checked.
+\b[0-9a-f]{40}\b => <oid>
+\b[0-9a-f]{7,12}\b(?=[\s.):\]]|$) => <oid>
+\b[0-9a-f]{7,12}\.\.[0-9a-f]{7,12}\b => <oid>..<oid>
+# gcc prints curly quotes in a UTF-8 locale and straight ones in C.
+[‘’] => '

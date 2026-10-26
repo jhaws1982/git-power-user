@@ -1,0 +1,2 @@
+# A new signing key every run: mask its fingerprint.
+SHA256:[A-Za-z0-9+/]{43} => SHA256:<fingerprint>

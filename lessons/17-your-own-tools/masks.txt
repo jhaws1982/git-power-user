@@ -1,0 +1,5 @@
+# difftool's temporary copy and file times change every run.
+/tmp/git-blob-\w+/ => /tmp/git-blob-<tmp>/
+\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d+ [-+]\d{4} => <mtime>
+# mergetool names its temporary files after its process id.
+_(BASE|LOCAL|REMOTE)_\d+\. => _\1_<pid>.

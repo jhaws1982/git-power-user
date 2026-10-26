@@ -1,0 +1,2 @@
+# git lg prints relative dates, which depend on when the demo runs.
+\(\d+ \w+ ago, => (<when> ago,

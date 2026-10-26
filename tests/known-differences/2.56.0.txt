@@ -1,0 +1,217 @@
+ok   01-how-git-stores-your-work: 10/10 blocks match
+FAIL 02-configure-git block 4
+    --- post
+    +++ demo
+    @@ -7,5 +7,5 @@
+     hint:
+     hint: 	git rebase
+     hint:
+    -hint: Disable this message with "git config advice.diverging false"
+    +hint: Disable this message with "git config set advice.diverging false"
+     fatal: Not possible to fast-forward, aborting.
+FAIL 02-configure-git: 5/6 blocks match
+ok   03-two-identities: 5/5 blocks match
+ok   04-ssh-keys: 4/4 blocks match
+ok   05-credential-helpers: 4/4 blocks match
+ok   06-clone-options: 6/6 blocks match
+FAIL 07-atomic-commits block 1
+    --- post
+    +++ demo
+    @@ -16,4 +16,4 @@
+     -    return mv > 0;
+     +    return mv > 0 && mv < 3300;
+      }
+    -(1/1) Stage this hunk [y,n,q,a,d,s,e,?]?
+    +(1/1) Stage this hunk [y,n,q,a,d,s,e,p,P,?]?
+FAIL 07-atomic-commits block 2
+    --- post
+    +++ demo
+    @@ -1,5 +1,8 @@
+     $ git add -p src/sensor.c
+    -...
+    +diff --git a/src/sensor.c b/src/sensor.c
+    +index <oid>..<oid> 100644
+    +--- a/src/sensor.c
+    ++++ b/src/sensor.c
+     @@ -7,7 +7,8 @@ static int read_raw(void)
+     
+      int sensor_read_mv(void)
+    @@ -10,6 +13,3 @@
+          return (int)(raw * 3300L / 4096);
+      }
+     
+    -(1/1) Stage this hunk [y,n,q,a,d,e,?]? s
+    -Sorry, cannot split this hunk
+    -...
+FAIL 07-atomic-commits: 8/10 blocks match
+ok   08-undo-anything: 13/13 blocks match
+FAIL 09-branches block 8
+    --- post
+    +++ demo
+    @@ -3,7 +3,7 @@
+     $ git log --oneline --graph --decorate --all
+     * <oid> (HEAD -> feature/adc-filter) Document the filter
+     * <oid> Add ADC filter stub
+    -* <oid> (origin/main, main) Add watchdog kick
+    +* <oid> (origin/main, origin/HEAD, main) Add watchdog kick
+     * <oid> Fix startup order
+     | * <oid> (origin/feature/adc-filter) Document the filter
+     | * <oid> Add ADC filter stub
+FAIL 09-branches block 11
+    --- post
+    +++ demo
+    @@ -1,5 +1,5 @@
+    + create mode 100644 filter.c
+    +
+     $ git branch -d feature/adc-filter
+     Deleted branch feature/adc-filter (was <oid>).
+     $ git branch -d experiment/dma
+    -error: the branch 'experiment/dma' is not fully merged.
+    -If you are sure you want to delete it, run 'git branch -D experiment/dma'
+FAIL 09-branches block 14
+    --- post
+    +++ demo
+    @@ -1,6 +1,6 @@
+    + - [deleted]         (none)     -> origin/feature/adc-filter
+    +
+     $ git worktree add ../sensor-fw-main main
+     Preparing worktree (checking out 'main')
+     HEAD is now at <oid> Document the filter
+     $ git worktree list
+    -/home/jon/sensor-fw       <oid> [fix/uart-timeout]
+    -/home/jon/sensor-fw-main  <oid> [main]
+FAIL 09-branches: 11/14 blocks match
+FAIL 10-worktrees block 2
+    --- post
+    +++ demo
+    @@ -1,7 +1,7 @@
+    +
+    +== the worktree way ==
+     $ git worktree add ../sensor-fw-hotfix -b fix/i2c-timeout main
+     Preparing worktree (new branch 'fix/i2c-timeout')
+     HEAD is now at <oid> Sensor firmware skeleton
+     
+     $ git worktree list
+    -/home/jon/sensor-fw         <oid> [feature/adc-filter]
+    -/home/jon/sensor-fw-hotfix  <oid> [fix/i2c-timeout]
+FAIL 10-worktrees block 10
+    --- post
+    +++ demo
+    @@ -1,3 +1,5 @@
+    +/home/jon/sensor-fw-review <oid> (detached HEAD)
+    +
+     $ git -C ../sensor-fw-hotfix status --short --ignored
+     ?? notes.txt
+     !! build/
+    @@ -6,5 +8,3 @@
+     fatal: '../sensor-fw-hotfix' contains modified or untracked files, use --force to delete it
+     
+     $ rm ../sensor-fw-hotfix/notes.txt && git worktree remove ../sensor-fw-hotfix && git worktree list
+    -/home/jon/sensor-fw         <oid> [feature/adc-filter]
+    -/home/jon/sensor-fw-review  <oid> (detached HEAD)
+FAIL 10-worktrees block 11
+    --- post
+    +++ demo
+    @@ -1,7 +1,7 @@
+    +
+     $ rm -rf ../sensor-fw-review && git worktree list
+    -/home/jon/sensor-fw         <oid> [feature/adc-filter]
+    -/home/jon/sensor-fw-review  <oid> (detached HEAD) prunable
+    +/home/jon/sensor-fw        <oid> [feature/adc-filter]
+    +/home/jon/sensor-fw-review <oid> (detached HEAD) prunable
+     
+     $ git worktree prune -v && git worktree list
+     Removing worktrees/sensor-fw-review: gitdir file points to non-existent location
+    -/home/jon/sensor-fw  <oid> [feature/adc-filter]
+FAIL 10-worktrees: 8/11 blocks match
+FAIL 11-remotes-and-forks block 7
+    --- post
+    +++ demo
+    @@ -4,9 +4,9 @@
+      * [new branch]      fix/uart-timeout -> alice/fix/uart-timeout
+      * [new branch]      main             -> alice/main
+     $ git branch -r
+    +  alice/HEAD -> alice/main
+       alice/fix/uart-timeout
+       alice/main
+       origin/HEAD -> origin/main
+       origin/fix/i2c-retry
+       origin/main
+    -  upstream/main
+FAIL 11-remotes-and-forks: 12/13 blocks match
+FAIL 12-clean-up-history block 3
+    --- post
+    +++ demo
+    @@ -1,7 +1,7 @@
+    -$ git rebase -i --autosquash main
+    -Successfully rebased and updated refs/heads/feature/adc-filter.
+    -
+     $ git log --oneline main..
+     <oid> Add filter tests
+    +<oid> wip
+     <oid> Implement moving average
+     <oid> Add filter interface
+    +
+    +$ git add filter.h
+FAIL 12-clean-up-history: SNIPPET MISMATCH: snippet 1 differs from todo-before.txt
+FAIL 12-clean-up-history: SNIPPET MISMATCH: snippet 2 differs from todo-after.txt
+FAIL 12-clean-up-history: 4/7 blocks match
+FAIL 13-merge-strategies block 5
+    --- post
+    +++ demo
+    @@ -7,5 +7,5 @@
+     hint:
+     hint: 	git rebase
+     hint:
+    -hint: Disable this message with "git config advice.diverging false"
+    +hint: Disable this message with "git config set advice.diverging false"
+     fatal: Not possible to fast-forward, aborting.
+FAIL 13-merge-strategies block 9
+    --- post
+    +++ demo
+    @@ -1,3 +1,3 @@
+    +* <oid> Initial commit
+    +
+     $ git branch -d feature/adc-filter
+    -error: the branch 'feature/adc-filter' is not fully merged.
+    -If you are sure you want to delete it, run 'git branch -D feature/adc-filter'
+FAIL 13-merge-strategies: 7/9 blocks match
+FAIL 14-hooks block 8
+    --- post
+    +++ demo
+    @@ -1,5 +1,5 @@
+     $ git commit -m "lowercase subject."
+     hint: The '.githooks/commit-msg' hook was ignored because it's not set as executable.
+    -hint: You can disable this warning with `git config advice.ignoredHook false`.
+    +hint: You can disable this warning with `git config set advice.ignoredHook false`.
+     [main <oid>] lowercase subject.
+      1 file changed, 1 insertion(+)
+FAIL 14-hooks: 8/9 blocks match
+FAIL 15-finding-bugs-in-history block 3
+    --- post
+    +++ demo
+    @@ -1,3 +1,4 @@
+    +
+     $ git bisect run ./test.sh
+     running './test.sh'
+     ok
+    @@ -17,7 +18,7 @@
+     [<oid>] Check flash CRC on boot
+     running './test.sh'
+     ok
+    -<oid> is the first bad commit
+    +<oid> is the first 'bad' commit
+     commit <oid>
+     Author: Jonathan Haws <jon@example.com>
+     Date:   Tue Oct 20 09:16:00 2026 -0600
+    @@ -26,4 +27,3 @@
+     
+      adc.c | 2 +-
+      1 file changed, 1 insertion(+), 1 deletion(-)
+    -bisect found first bad commit
+FAIL 15-finding-bugs-in-history: 10/11 blocks match
+ok   16-aliases: 8/8 blocks match
+skip 17-your-own-tools block 2: the list of available tools depends on what is installed on the machine
+ok   17-your-own-tools: 6/6 blocks match (1 skipped)
+ok   b1-tags-releases-signing: 9/9 blocks match
+ok   b2-gitattributes-line-endings: 7/7 blocks match
