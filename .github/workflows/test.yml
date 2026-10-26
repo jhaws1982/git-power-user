@@ -63,6 +63,7 @@ jobs:
       - name: Check every exercise can be passed (Git Bash)
         shell: bash
         run: |
+          set +e   # Actions runs bash with -e and pipefail; collect the failures first
           git --version
           tests/run-exercises.sh 2>&1 | tee exercises.log
           status=${PIPESTATUS[0]}
