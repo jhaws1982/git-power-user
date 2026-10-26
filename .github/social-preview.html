@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>social preview</title>
+<style>
+html, body { margin: 0; }
+body { width: 1280px; height: 640px; background: #161B18; color: #F4F5F0; font-family: "Inter", "Helvetica Neue", Arial, sans-serif; position: relative; overflow: hidden; }
+.wrap { position: absolute; left: 80px; top: 92px; right: 80px; }
+.kicker { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; color: #2EBF7A; font-size: 28px; letter-spacing: 1px; }
+h1 { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 88px; line-height: 1.05; margin: 18px 0 26px; font-weight: 700; }
+p { font-size: 34px; line-height: 1.35; color: #CDD3C8; margin: 0; max-width: 980px; }
+.chips { position: absolute; left: 80px; bottom: 70px; display: flex; gap: 16px; }
+.chip { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 24px; border: 2px solid #2EBF7A; color: #C2F0D9; padding: 10px 18px; border-radius: 10px; }
+.graph { position: absolute; right: 70px; bottom: 60px; }
+</style></head><body>
+<div class="wrap">
+  <div class="kicker">$ git clone github.com/jhaws1982/git-power-user</div>
+  <h1>Become a Git<br>Power User</h1>
+  <p>A free git course: 17 lessons and 2 bonuses, a hands-on exercise for each, and every command tested in CI.</p>
+</div>
+<div class="chips"><span class="chip">Linux</span><span class="chip">Windows</span><span class="chip">git 2.43 + latest</span></div>
+<svg class="graph" width="260" height="170" viewBox="0 0 260 170" xmlns="http://www.w3.org/2000/svg">
+  <path d="M20 140 H240" stroke="#4A524D" stroke-width="6" fill="none"/>
+  <path d="M80 140 C110 140 110 50 140 50 H200 C230 50 230 140 240 140" stroke="#2EBF7A" stroke-width="6" fill="none"/>
+  <g fill="#161B18" stroke-width="6">
+    <circle cx="20" cy="140" r="14" stroke="#CDD3C8"/><circle cx="80" cy="140" r="14" stroke="#CDD3C8"/>
+    <circle cx="140" cy="50" r="14" stroke="#2EBF7A"/><circle cx="200" cy="50" r="14" stroke="#2EBF7A"/>
+    <circle cx="240" cy="140" r="14" stroke="#CDD3C8"/>
+  </g>
+</svg>
+</body></html>

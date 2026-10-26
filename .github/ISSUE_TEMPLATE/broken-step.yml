@@ -1,0 +1,36 @@
+name: A step doesn't work for me
+description: A command in a lesson or exercise gave you different output, or an error.
+labels: [broken-step]
+body:
+  - type: input
+    id: lesson
+    attributes:
+      label: Lesson
+      description: Which lesson or exercise? (for example, "08 undo anything" or "lessons/12-clean-up-history/check.sh")
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What you ran and what you got
+      description: Paste the command and its full output.
+      render: console
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What the lesson shows
+  - type: input
+    id: git
+    attributes:
+      label: git --version
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Where you ran it
+      options: [Linux, macOS, Windows (Git Bash), Windows (PowerShell), WSL, Dev container, Other]
+    validations:
+      required: true

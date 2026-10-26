@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Git for teams workshop
+    url: https://consciouslycode.com/services/
+    about: Help getting a whole team onto the same git workflow.
