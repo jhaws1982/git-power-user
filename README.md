@@ -103,7 +103,9 @@ Without Docker, `tests/run-all.sh` runs everything, and `python3 tests/check_les
 - **Ubuntu 24.04's git (2.43).** The posts show this version's output, so every block must match.
 - **The newest git release, built from source.** Newer git words some messages differently (hints now say `git config set`, `bisect` says `first 'bad' commit`, `worktree list` pads columns less, the rebase todo list puts `#` before each subject). Those are recorded in `tests/known-differences/<version>.txt`, and `tests/compare-known.sh` fails only when the differences change. That's the signal that a new git release changed something a post shows; the weekly run opens an issue when it happens.
 
-A second job reads every published post from the site and checks it still matches `transcript.md`.
+A Windows job runs on `windows-latest`. It runs every exercise in Git Bash, the way Windows readers will, and `tests/windows/check-windows.ps1` checks the Windows-specific steps in lessons 4, 5, and B2 in PowerShell: the OpenSSH agent service (disabled until you enable it), `ssh-add`, keys surviving an agent restart, Git for Windows' bundled ssh not seeing that agent, `core.sshCommand`, Git Credential Manager being bundled, and what a Windows checkout gets for each line-ending attribute.
+
+A last job reads every published post from the site and checks it still matches `transcript.md`.
 
 ## When git changes
 

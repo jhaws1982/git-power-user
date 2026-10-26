@@ -46,5 +46,8 @@ export GIT_CONFIG_GLOBAL="$LAB/home/.gitconfig"
 echo "git config --global now means $LAB/home/.gitconfig"
 EOF
 }
+# A path the way git itself sees it. In Git Bash on Windows, /c/Users/... or /tmp/...
+# is a Git Bash path, but git.exe compares includeIf gitdir: against C:/Users/...
+gitpath() { if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else printf '%s\n' "$1"; fi; }
 # git that reads the lab's global config (and the repo's own), for checking those lessons.
 egit() { GIT_CONFIG_GLOBAL="$LAB/home/.gitconfig" GIT_CONFIG_NOSYSTEM=1 git "$@"; }
