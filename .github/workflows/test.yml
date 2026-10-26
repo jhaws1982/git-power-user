@@ -19,7 +19,7 @@ jobs:
       matrix:
         git: [ubuntu-24.04, latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Pick the git version
         id: ref
         run: |
@@ -33,7 +33,7 @@ jobs:
       - name: Build the test image
         run: |
           docker build --progress=plain -t lessons --build-arg GIT_REF=${{ steps.ref.outputs.ref }} docker/ > build.log 2>&1 || {
-            tail -n 8 build.log | sed 's/^/::error::/'; exit 1; }
+            { grep -iE 'error|not found' build.log | tail -n 6; tail -n 2 build.log; } | sed 's/^/::error::/'; exit 1; }
           tail -n 3 build.log
       - name: Run every lesson
         # The posts show Ubuntu 24.04's git, so that run must match exactly. A newer
@@ -58,5 +58,5 @@ jobs:
     # Once a lesson is published, its live post must still match transcript.md.
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: python3 tools/check-live.py

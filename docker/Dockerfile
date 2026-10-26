@@ -10,12 +10,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git ca-certificates make gcc libc6-dev clang-format cmake ninja-build \
         openssh-client python3 coreutils diffutils \
     && rm -rf /var/lib/apt/lists/*
-# Optionally replace the distribution's git with one built from a tag.
+# Optionally replace the distribution's git with one built from a tag, leaving out
+# everything the lessons never use (HTTPS, Perl and Python scripts, gitk, translations,
+# and the optional Rust code that git 2.52 and later build when Cargo is installed).
 RUN if [ -n "$GIT_REF" ]; then \
         apt-get update && apt-get install -y --no-install-recommends \
             zlib1g-dev && \
         git clone --depth 1 --branch "$GIT_REF" https://github.com/git/git.git /tmp/git && \
-        make -C /tmp/git -j"$(nproc)" prefix=/usr/local NO_CURL=1 NO_OPENSSL=1 NO_EXPAT=1 NO_GETTEXT=1 NO_PERL=1 NO_PYTHON=1 NO_TCLTK=1 install >/dev/null && \
+        make -C /tmp/git -j"$(nproc)" prefix=/usr/local NO_RUST=1 NO_CURL=1 NO_OPENSSL=1 NO_EXPAT=1 NO_GETTEXT=1 NO_PERL=1 NO_PYTHON=1 NO_TCLTK=1 install >/dev/null && \
         rm -rf /tmp/git /var/lib/apt/lists/* ; \
     fi
 RUN git --version
