@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 # Optionally replace the distribution's git with one built from a tag, leaving out
 # everything the lessons never use (HTTPS, Perl and Python scripts, gitk, translations,
-# and the optional Rust code that git 2.52 and later build when Cargo is installed).
+# and the optional Rust code newer releases build by default).
 RUN if [ -n "$GIT_REF" ]; then \
         apt-get update && apt-get install -y --no-install-recommends \
             zlib1g-dev && \

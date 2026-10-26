@@ -1,5 +1,7 @@
 # Become a Git Power User
 
+[![test the lessons](https://github.com/jhaws1982/git-power-user/actions/workflows/test.yml/badge.svg)](https://github.com/jhaws1982/git-power-user/actions/workflows/test.yml)
+
 A free course that goes from how git stores your work to the commands that make day-to-day work fast and safe. Each lesson is a post on [consciouslycode.com](https://consciouslycode.com/training/); this repository holds the code behind them and the tests that keep them honest.
 
 **Every command in every post is run by CI and compared with what the post shows.** If a new git release changes its output, or someone edits a post without re-running it, the build fails.
@@ -44,7 +46,7 @@ lessons/08-undo-anything/check.sh     # PASS, or a hint
 
 The exercises never read or change your own git config. Lessons about `--global` settings give you a lab config file: source the `env.sh` that setup creates. Run setup again to start over.
 
-[`cheatsheet/gitconfig`](cheatsheet/gitconfig) collects every setting and alias the course recommends in one file, each labeled with its lesson.
+[`cheatsheet/gitconfig`](cheatsheet/gitconfig) collects every setting and alias the course recommends in one file, each labeled with its lesson, and [`cheatsheet/git-power-user.pdf`](cheatsheet/git-power-user.pdf) puts the most useful commands on one printable page (built from `cheatsheet/cheatsheet.html`).
 
 ## What's in this repository
 

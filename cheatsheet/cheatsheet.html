@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Become a Git Power User: cheat sheet</title>
+<style>
+@page { size: Letter; margin: 0.4in; }
+* { box-sizing: border-box; }
+body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: #161B18; font-size: 8.4pt; line-height: 1.3; margin: 0; }
+h1 { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 15pt; margin: 0; }
+.sub { color: #4A524D; margin: 2px 0 8px; font-size: 9pt; }
+.grid { columns: 3; column-gap: 14px; }
+section { break-inside: avoid; margin-bottom: 8px; border-top: 2px solid #2EBF7A; padding-top: 3px; }
+h2 { font-size: 9.5pt; margin: 0 0 3px; }
+h2 span { color: #8A9490; font-weight: 400; font-size: 8pt; }
+code, pre { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 7.6pt; }
+pre { background: #F4F5F0; padding: 4px 5px; margin: 2px 0 4px; white-space: pre-wrap; border-radius: 3px; }
+dl { margin: 0; } dt { font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace; font-size: 7.6pt; margin-top: 3px; } dd { margin: 0 0 0 8px; color: #4A524D; }
+.foot { margin-top: 6px; color: #4A524D; font-size: 8pt; border-top: 1px solid #DDE1D8; padding-top: 4px; }
+</style></head><body>
+<h1>Become a Git Power User</h1>
+<div class="sub">The commands and settings from the free course at consciouslycode.com/training. Lesson numbers in grey.</div>
+<div class="grid">
+<section><h2>Set up once <span>2, 3</span></h2>
+<pre>git config --global init.defaultBranch main
+git config --global pull.ff only
+git config --global push.autoSetupRemote true
+git config --global fetch.prune true
+git config --global merge.conflictStyle zdiff3
+git config --global rerere.enabled true
+git config --global rebase.autoSquash true
+git config --list --show-origin --show-scope</pre>
+<dl><dt>[includeIf "gitdir:~/git/work/"]<br>&nbsp;&nbsp;path = ~/.gitconfig-work</dt><dd>Work email in work repos, automatically.</dd></dl>
+</section>
+<section><h2>What git stores <span>1</span></h2>
+<dl><dt>git cat-file -p HEAD</dt><dd>A commit: tree, parents, author, message.</dd>
+<dt>git cat-file -p 'HEAD^{tree}'</dt><dd>A folder listing: blobs and trees.</dd>
+<dt>cat .git/HEAD</dt><dd>Which branch you're on. A branch is a file holding one id.</dd></dl>
+</section>
+<section><h2>Commit one thing at a time <span>7</span></h2>
+<dl><dt>git add -p</dt><dd>Stage hunk by hunk: y, n, s (split), e (edit).</dd>
+<dt>git diff --staged</dt><dd>What the next commit will contain.</dd>
+<dt>git commit --amend --no-edit</dt><dd>Add staged changes to the last commit.</dd></dl>
+</section>
+<section><h2>Undo anything <span>8</span></h2>
+<dl><dt>git restore &lt;file&gt;</dt><dd>Discard uncommitted edits. Can't be undone.</dd>
+<dt>git restore --staged &lt;file&gt;</dt><dd>Unstage, keep the edit.</dd>
+<dt>git reset --soft HEAD~1</dt><dd>Take back the last commit, keep it staged.</dd>
+<dt>git reflog</dt><dd>Every commit HEAD has been on.</dd>
+<dt>git reset --hard HEAD@{1}</dt><dd>Back to where you were one step ago.</dd>
+<dt>git reset --hard ORIG_HEAD</dt><dd>Undo the last merge, rebase, or reset.</dd>
+<dt>git branch &lt;name&gt; &lt;id&gt;</dt><dd>Bring back a deleted branch (branch -D printed the id).</dd>
+<dt>git revert &lt;commit&gt;</dt><dd>Already pushed? Add a commit that undoes it.</dd></dl>
+</section>
+<section><h2>Branches and worktrees <span>9, 10</span></h2>
+<dl><dt>git switch -c feature/x</dt><dd>New branch from where you are.</dd>
+<dt>git push -u origin feature/x</dt><dd>Share it and track it.</dd>
+<dt>git push --force-with-lease</dt><dd>After a rebase; refuses if someone else pushed.</dd>
+<dt>git branch -d x</dt><dd>Delete if merged. -D deletes anyway.</dd>
+<dt>git worktree add ../hotfix -b fix/y main</dt><dd>A second checkout, no stash needed.</dd>
+<dt>git worktree list / remove</dt><dd>See and clean up worktrees.</dd></dl>
+</section>
+<section><h2>Remotes and forks <span>11</span></h2>
+<pre>git remote add upstream &lt;url&gt;
+git fetch upstream
+git merge --ff-only upstream/main
+git push origin main</pre>
+</section>
+<section><h2>Clean up before review <span>12</span></h2>
+<dl><dt>git commit --fixup=&lt;commit&gt;</dt><dd>A fix for an earlier commit.</dd>
+<dt>git rebase -i --autosquash main</dt><dd>Fold fixups in; edit the todo list for the rest.</dd>
+<dt>git diff branch@{1} branch</dt><dd>No output: the code didn't change.</dd>
+<dt>git range-diff main branch@{1} branch</dt><dd>What changed between versions, per commit.</dd>
+<dt>git rebase --update-refs main</dt><dd>Keep stacked branches together.</dd></dl>
+</section>
+<section><h2>Landing a branch <span>13</span></h2>
+<dl><dt>git merge --no-ff feature</dt><dd>Keep the branch's commits and a merge commit.</dd>
+<dt>git rebase main &amp;&amp; git merge --ff-only</dt><dd>Linear history, commits kept.</dd>
+<dt>git merge --squash feature</dt><dd>One commit on main.</dd></dl>
+</section>
+<section><h2>Find the commit that broke it <span>15</span></h2>
+<pre>git bisect start HEAD v1.0
+git bisect run ./test.sh   # 0 good, 1 bad, 125 skip
+git bisect reset</pre>
+<dl><dt>git log -S'text'</dt><dd>Commits that added or removed a string.</dd>
+<dt>git log -G'regex'</dt><dd>Commits whose diff touches a matching line.</dd>
+<dt>git log -L :func:file</dt><dd>History of one function.</dd>
+<dt>git blame -w  /  blame.ignoreRevsFile</dt><dd>See past whitespace and reformat commits.</dd></dl>
+</section>
+<section><h2>Hooks <span>14</span></h2>
+<dl><dt>git config core.hooksPath .githooks</dt><dd>Hooks committed with the repo. Make them executable.</dd>
+<dt>git commit --no-verify</dt><dd>Skip pre-commit and commit-msg, once.</dd></dl>
+</section>
+<section><h2>Aliases <span>16</span></h2>
+<pre>[alias]
+  st = status -sb
+  lg = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%cr, %an)%C(reset)'
+  unstage = restore --staged
+  amend = commit --amend --no-edit
+  pushf = push --force-with-lease
+  last = log -1 --stat</pre>
+</section>
+<section><h2>Tags and signing <span>B1</span></h2>
+<dl><dt>git tag -a v1.0 -m '...'</dt><dd>Annotated tag for a release.</dd>
+<dt>git describe --dirty</dt><dd>v1.0-2-g0c27521: a version for any build.</dd>
+<dt>git push --follow-tags</dt><dd>Branches don't carry tags; this does.</dd>
+<dt>gpg.format ssh + user.signingKey</dt><dd>Sign with your SSH key: commit -S, tag -s.</dd></dl>
+</section>
+<section><h2>Line endings <span>B2</span></h2>
+<pre>* text=auto
+*.sh  text eol=lf
+*.bat text eol=crlf
+*.bin binary</pre>
+<dl><dt>git add --renormalize .</dt><dd>Fix files already committed with CRLF.</dd>
+<dt>git ls-files --eol</dt><dd>What's stored, what's checked out.</dd></dl>
+</section>
+</div>
+<div class="foot">Every command in the course is tested on every change. Lessons and exercises: consciouslycode.com/training &nbsp;·&nbsp; github.com/jhaws1982/git-power-user &nbsp;·&nbsp; Teams: the Git for teams workshop, consciouslycode.com/services</div>
+</body></html>
