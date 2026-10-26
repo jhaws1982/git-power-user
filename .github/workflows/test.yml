@@ -54,6 +54,36 @@ jobs:
           gh issue create --title "Lesson transcripts no longer match (git ${{ matrix.git }} ${{ steps.ref.outputs.ref }})" \
             --body "The weekly run failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
+  windows:
+    # Readers on Windows run the exercises in Git Bash, and lessons 4, 5, and
+    # bonus 2 give Windows-specific steps. Both are checked on a real Windows runner.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check every exercise can be passed (Git Bash)
+        shell: bash
+        run: |
+          git --version
+          tests/run-exercises.sh 2>&1 | tee exercises.log
+          status=${PIPESTATUS[0]}
+          tests/annotate.sh exercises.log "Windows exercises"
+          exit "$status"
+      - name: Check the Windows steps in lessons 4, 5, and B2 (PowerShell)
+        if: always()
+        shell: pwsh
+        run: |
+          $t = $null; $e = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD/tests/windows/check-windows.ps1", [ref]$t, [ref]$e) | Out-Null
+          if ($e.Count) { $e | ForEach-Object { "::error title=check-windows.ps1 parse error::$($_.ToString() -replace "`r?`n", '%0A')" }; exit 1 }
+          try { tests/windows/check-windows.ps1 } catch { "::error title=check-windows.ps1 stopped::$($_ -replace "`r?`n", '%0A')"; exit 1 }
+      - name: Open an issue when the weekly run fails
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "Windows checks failed" `
+            --body "The weekly run failed on windows-latest: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
   published-posts:
     # Once a lesson is published, its live post must still match transcript.md.
     runs-on: ubuntu-24.04
