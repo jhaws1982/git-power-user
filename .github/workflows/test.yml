@@ -67,6 +67,10 @@ jobs:
           tests/run-exercises.sh 2>&1 | tee exercises.log
           status=${PIPESTATUS[0]}
           tests/annotate.sh exercises.log "Windows exercises"
+          if [ "$status" != 0 ] && ! grep -q '^FAIL' exercises.log; then
+            { printf '::error title=Windows exercises (log tail)::'; tail -n 15 exercises.log | sed 's/%/%25/g' | tr -d '\r' | awk -v ORS='%0A' 1; echo; }
+          fi
+          { printf '::notice title=Windows exercises passed::'; grep '^ok' exercises.log | sed 's/%/%25/g' | tr -d '\r' | awk -v ORS='%0A' 1; echo; }
           exit "$status"
       - name: Check the Windows steps in lessons 4, 5, and B2 (PowerShell)
         if: always()

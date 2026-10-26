@@ -115,5 +115,6 @@ Remove-Item -Recurse -Force $work
 if ($env:GITHUB_STEP_SUMMARY) {
     "## Windows checks`n" + ($script:report | ForEach-Object { "- $_" } | Out-String) | Out-File -Append $env:GITHUB_STEP_SUMMARY
 }
+"::notice title=Windows checks::$(($script:report -join '%0A') -replace '::', ': :')"
 "$($script:failures) failure(s)"
 exit $script:failures
