@@ -10,6 +10,7 @@ import html
 import json
 import re
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -18,7 +19,11 @@ SITE = "https://consciouslycode.com/wp-json/wp/v2/posts?slug={}&_fields=content"
 
 
 def live_blocks(slug):
-    with urllib.request.urlopen(SITE.format(slug), timeout=30) as r:
+    # Some security plugins turn away Python's default User-Agent, so send our own.
+    req = urllib.request.Request(SITE.format(slug), headers={
+        "User-Agent": "git-power-user-ci (+https://github.com/jhaws1982/git-power-user)",
+        "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=30) as r:
         posts = json.load(r)
     if not posts:
         return None
@@ -41,14 +46,19 @@ def main():
         transcript = ROOT / "lessons" / lesson / "transcript.md"
         if not transcript.exists():
             continue
-        live = live_blocks(slug)
+        try:
+            live = live_blocks(slug)
+        except (urllib.error.URLError, json.JSONDecodeError) as e:
+            failed += 1
+            print(f"::error::{lesson}: couldn't read the post from the site: {e}")
+            continue
         if live is None:
             print(f"skip {lesson}: not published yet")
             continue
         mine = [b.rstrip("\n") for b in re.findall(r"```\w*\n(.*?)```", transcript.read_text(), re.S)]
         if live != mine:
             failed += 1
-            print(f"FAIL {lesson}: the live post's transcripts differ from transcript.md")
+            print(f"::error::{lesson}: the live post's transcripts differ from transcript.md")
         else:
             print(f"ok   {lesson}: {len(mine)} blocks match the live post")
     return 1 if failed else 0

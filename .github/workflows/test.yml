@@ -31,7 +31,10 @@ jobs:
           fi
           echo "ref=$ref" >> "$GITHUB_OUTPUT"
       - name: Build the test image
-        run: docker build -t lessons --build-arg GIT_REF=${{ steps.ref.outputs.ref }} docker/
+        run: |
+          docker build --progress=plain -t lessons --build-arg GIT_REF=${{ steps.ref.outputs.ref }} docker/ > build.log 2>&1 || {
+            tail -n 8 build.log | sed 's/^/::error::/'; exit 1; }
+          tail -n 3 build.log
       - name: Run every lesson
         # The posts show Ubuntu 24.04's git, so that run must match exactly. A newer
         # git is compared with its recorded differences (tests/known-differences/).
@@ -41,6 +44,8 @@ jobs:
           else
             docker run --rm -v "$PWD:/course" -w /course lessons tests/run-all.sh
           fi
+      - name: Check every exercise can be passed
+        run: docker run --rm -v "$PWD:/course" -w /course lessons tests/run-exercises.sh
       - name: Open an issue when the weekly run fails
         if: failure() && github.event_name == 'schedule'
         env:

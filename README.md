@@ -32,12 +32,27 @@ Take them in order; each one builds on the ones before it.
 
 Links work as each post is published; they redirect to the post's permanent address.
 
+## Practice
+
+Every lesson has a hands-on exercise. `setup.sh` builds a small practice repository in `lab/`, the lesson's README says what to do, and `check.sh` tells you whether you've done it or what's still missing:
+
+```bash
+lessons/08-undo-anything/setup.sh
+cd lab/08-undo-anything/sensor-fw     # ...recover what was lost...
+lessons/08-undo-anything/check.sh     # PASS, or a hint
+```
+
+The exercises never read or change your own git config. Lessons about `--global` settings give you a lab config file: source the `env.sh` that setup creates. Run setup again to start over.
+
 [`cheatsheet/gitconfig`](cheatsheet/gitconfig) collects every setting and alias the course recommends in one file, each labeled with its lesson.
 
 ## What's in this repository
 
 ```text
 lessons/NN-name/
+    README.md       the lesson's exercise
+    setup.sh        builds the exercise's practice repository in lab/NN-name/
+    check.sh        PASS, or a hint about what's missing
     demo.sh         builds the lesson's example repository and runs every command in the post
     transcript.md   the post's terminal blocks (the lines that start with "$ "), copied from the post
     snippets.md     the post's other code (config files, scripts), which demo.sh runs as written
@@ -47,6 +62,8 @@ tests/
     lib.sh          what every demo runs in: a throwaway HOME, no system config, fixed commit dates
     check_lesson.py runs one demo and compares its output with transcript.md
     run-all.sh      checks every lesson
+    run-exercises.sh  proves every exercise can be passed, using tests/solutions/
+    compare-known.sh  compares a newer git with its recorded differences
 tools/
     extract-transcripts.py   copies a post's blocks into transcript.md and snippets.md
     regen-blocks.py          rewrites failing blocks from a fresh run, for review
